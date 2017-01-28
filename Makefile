@@ -1,0 +1,53 @@
+CFLAGS += -std=c++0x
+#CFLAGS += -D__STDC_CONSTANT_MACROS
+#CFLAGS += -D__STDC_LIMIT_MACROS
+#CFLAGS += -DTARGET_POSIX
+#CFLAGS += -DTARGET_LINUX
+#CFLAGS += -fPIC
+#CFLAGS += -DPIC
+#CFLAGS += -D_REENTRANT
+#CFLAGS += -D_LARGEFILE64_SOURCE
+#CFLAGS += -D_FILE_OFFSET_BITS=64
+#CFLAGS += -DHAVE_CMAKE_CONFIG
+#CFLAGS += -D__VIDEOCORE4__
+#CFLAGS += -U_FORTIFY_SOURCE
+#CFLAGS += -Wall
+#CFLAGS += -DHAVE_OMXLIB
+#CFLAGS += -DUSE_EXTERNAL_FFMPEG
+#CFLAGS += -DHAVE_LIBAVCODEC_AVCODEC_H
+#CFLAGS += -DHAVE_LIBAVUTIL_OPT_H
+#CFLAGS += -DHAVE_LIBAVUTIL_MEM_H
+#CFLAGS += -DHAVE_LIBAVUTIL_AVUTIL_H
+#CFLAGS += -DHAVE_LIBAVFORMAT_AVFORMAT_H
+#CFLAGS += -DHAVE_LIBAVFILTER_AVFILTER_H
+#CFLAGS += -DHAVE_LIBSWRESAMPLE_SWRESAMPLE_H
+#CFLAGS += -DOMX -DOMX_SKIP64BIT
+#CFLAGS += -ftree-vectorize
+#CFLAGS += -DUSE_EXTERNAL_OMX
+#CFLAGS += -DTARGET_RASPBERRY_PI
+#CFLAGS += -DUSE_EXTERNAL_LIBBCM_HOST
+
+LDFLAGS += -L/opt/vc/lib
+#LDFLAGS += -L/lib
+#LDFLAGS += -L/usr/lib
+#LDFLAGS += -L./
+#LDFLAGS += -lc
+#LDFLAGS += -lWFC
+LDFLAGS += -lGLESv2
+#LDFLAGS += -lEGL
+LDFLAGS += -lbcm_host
+#LDFLAGS += -lopenmaxil
+
+#INCLUDES += -Ilinux 
+INCLUDES += -I/opt/vc/include/interface/vcos/pthreads 
+INCLUDES += -I/opt/vc/include 
+INCLUDES += -I/opt/vc/include/interface/vmcs_host
+INCLUDES += -I/opt/vc/include/interface/vmcs_host/linux
+#INCLUDES += -I/usr/lib/arm-linux-gnueabihf/dbus-1.0/include
+#INCLUDES += -I/usr/include
+#INCLUDES += -I/usr/include/freetype2
+
+all: pointer_highlight
+
+pointer_highlight:
+	gcc $(CFLAGS) -o test pointer_highlight.cpp $(LDFLAGS) $(INCLUDES)
