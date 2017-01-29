@@ -1478,6 +1478,11 @@ class TBOPlayer:
         self.save_video_window_coordinates()
 
     def vwindow_motion(self, event):
+        w = self.vprogress_bar_window.winfo_width()
+        h = self.vprogress_bar_window.winfo_height()
+        if type(w) == type(h) == type(event.x) == type(event.y) == type(0):
+            self.cursor.ResizeWindow(event.x, event.y, w, h)
+
         if self.options.full_screen == 1:
             return
         try:
@@ -1518,9 +1523,13 @@ class TBOPlayer:
         self.save_video_window_coordinates()
 
     def vwindow_show_and_hide(self, *event):
-        e = event[0]
-        self.cursor.MoveWindow(e.x, e.y)
-        self.vprogress_bar.lift(self.vprogress_bar_frame)
+        if len(event):
+            e = event[0]
+            if type(e.y) == type(e.x) == type(0):
+                self.cursor.MoveWindow(e.x, e.y)
+                self.vprogress_bar.lift(self.vprogress_bar_frame)
+            else:
+                print type(e.y), type(e.x), type(int)
         if not self.options.full_screen:
             self.vprogress_grip.lift(self.vprogress_bar)
         self.move_video(pbar=True)
@@ -1559,7 +1568,7 @@ class TBOPlayer:
             or (hasvbw and not self.vprogress_bar_window)):
             return
         screenres = self.get_screen_res()
-        if self.options.full_screen == 1: 
+        if self.options.full_screen == 1:
             self.options.full_screen = 0
             width, height = (480, 360)
             vsize_m = self.RE_RESOLUTION.match(self.options.windowed_mode_resolution)
@@ -1584,7 +1593,8 @@ class TBOPlayer:
         if event:
             w = self.vprogress_bar_window.winfo_width()
             h = self.vprogress_bar_window.winfo_height()
-            self.cursor.ResizeWindow(event.x, event.y, w, h)
+            if type(w) == type(h) == type(event.x) == type(event.y) == type(0):
+                self.cursor.ResizeWindow(event.x, event.y, w, h)
         if not self.dbus_connected:
             return
         if not self.options.full_screen:
@@ -2864,20 +2874,21 @@ class Cursor:
         return img_p, width, height
 
     def MoveWindow(self, x, y):
+        sleep(1.0/60*25) # max 25 fps
         new_x = x + self.src_rect.x
         new_y = y + self.src_rect.y
         self.lib_bcm.vc_dispmanx_rect_set(ctypes.byref(self.dst_rect), new_x, new_y, self.dst_rect.width, self.dst_rect.height)
         self._update_element()
 
     def ResizeWindow(self, x, y, width, height):
+        sleep(1.0/60*25)
         self.lib_bcm.vc_dispmanx_rect_set(ctypes.byref(self.src_rect), x, y, width<<16, height<<16)
         self._update_element()
 
     def _update_element(self):
         assert( self.element )
-        dispman_update = self.lib_bcm.vc_dispmanx_update_start(0)
+        dispman_update = self.lib_bcm.vc_dispmanx_update_start(10)
         assert( dispman_update )
-        #[, , , , , , , , ]
         assert( not self.lib_bcm.vc_dispmanx_element_change_attributes(
             dispman_update,     # DISPMANX_UPDATE_HANDLE_T
             self.element,       # DISPMANX_ELEMENT_HANDLE_T
